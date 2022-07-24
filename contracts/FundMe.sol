@@ -11,12 +11,10 @@ contract FundMe {
      modifier onlyOwner {
         if (msg.sender != owner) revert NotOwner();
         _;
-    }
-    
+    }    
     constructor() {
         owner = msg.sender;
     }
-
     fallback() external payable { }
 
     function deposit() external payable {
@@ -24,15 +22,12 @@ contract FundMe {
         addressToAmount[msg.sender] += msg.value;
         funders.push(msg.sender);
     }
-
     function withdraw() payable onlyOwner external {
         funders = new address[](0);
         (bool callSuccess, ) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Withdrawal Failed!");
     }
-
     function ethBalance() external view returns(uint256){
         return address(this).balance;
     }
-
 }
