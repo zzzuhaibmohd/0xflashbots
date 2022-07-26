@@ -7,7 +7,8 @@ module.exports = {
   networks: {
     goerli: {
       url: process.env.ATTACKER_RPC_URL,
-      accounts: [process.env.ATTACKER_PRIVATE_KEY]
+      //accounts: [process.env.ATTACKER_PRIVATE_KEY] //deployAttackerContract.js
+      accounts: [process.env.ERC20TOKEN_DEPLOYER_KEY] //deployERC20Token.js
     }
   }
 };
